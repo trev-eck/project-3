@@ -34,19 +34,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-//   const Amadeus = require("amadeus")
-
-// let test = {};
-const Amadeus = require("amadeus");
-// const axios = require("axios");
-
-const amadeus = new Amadeus({
-  clientId: process.env.REACT_APP_AMADEUS_CLIENT_ID,
-  clientSecret: process.env.REACT_APP_AMADEUS_CLIENT_SECRET,
-});
-
+const Amadeus = require("amadeus")
+let saveThis;
 let thisLon = "34.0522";
 let thisLat = "118.2437";
+
+let clientI;
+let clientS;
+
+async function getKeys(token) {
+  try{
+    //console.log("clientI before", clientI);
+    clientI = await API.getAmadeusId(token);
+    clientI = clientI.data;
+    //console.log("clientI after", clientI);
+
+    //console.log("clientS before", clientS);
+    clientS = await API.getAmadeusSe(token);
+    clientS = clientS.data;
+    //console.log("clientS after", clientS);
+  }catch{
+  }
+}
+//getKeys();
 
 export default function DiscoverContainer(props) {
   /*--------------------------*/
@@ -99,6 +109,7 @@ export default function DiscoverContainer(props) {
 
     // API call to get user profile
     if (token) {
+      getKeys(token);
       API.getProfile(token)
         .then((res) => {
           // console.log("getting profile", res.data);
@@ -120,7 +131,7 @@ export default function DiscoverContainer(props) {
               trip: res.data,
               city: res.data.city,
             });
-            console.log(tripState.trip);
+            //console.log(tripState.trip);
             API.getLatLon(res.data.city)
               .then((res) => {
                 thisLon = res.data.coord.lon;
@@ -132,8 +143,21 @@ export default function DiscoverContainer(props) {
                   lon: thisLon,
                 });
               })
+              // API.discoverActivities(thisLat, thisLon)
+              // .then((rez) => {
+              //   setActivitiesState({
+              //     activitives: rez.data
+              //   })
+              // })
               .then(() => {
+                //console.log("did we beat the request?");
                 getActivities(thisLat, thisLon);
+                // API.discoverActivities(tripState.lat, tripState.lon).then((res) =>{
+                //   console.log("getting activities", res.data);
+                //   setActivitiesState({
+                //     activities: res.data,
+                //   });
+                // })
               });
           });
         })
@@ -153,17 +177,30 @@ export default function DiscoverContainer(props) {
 
   // get activities by trip location
   const getActivities = (lat, lon) => {
+
+    const amadeus = new Amadeus({
+      clientId: clientI,
+      clientSecret: clientS,
+    });
+    //console.log("amadeus", amadeus);
+    clientI = "";
+    clientS = "";
+    //console.log(amadeus, lat, lon);
     amadeus.shopping.activities
       .get({
         latitude: lat,
         longitude: lon,
       })
       .then((response) => {
-        // console.log("getting activities", response.data);
+        //console.log("getting activities", response.data);
         setActivitiesState({
           activities: response.data,
         });
-      });
+      }).catch((error) => {console.log("didnt make it through the get acti,   ", error)})
+    // setActivitiesState({
+    //   activities: temp,
+    // });
+
   };
 
   const search = (needId, array) => {

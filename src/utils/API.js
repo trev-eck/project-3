@@ -2,39 +2,29 @@ const axios = require("axios");
 const Amadeus = require("amadeus");
 const env = require("dotenv");
 
-const amadeus = new Amadeus({
-    clientId: process.env.REACT_APP_AMADEUS_CLIENT_ID,
-    clientSecret: process.env.REACT_APP_AMADEUS_CLIENT_SECRET
-});
 
-const urlPrefix = "https://rendezvous-apiroutes.herokuapp.com";
-// const urlPrefix = "http://localhost:3001";
-
+//const urlPrefix = "https://rendezvous-apiroutes.herokuapp.com";
+const urlPrefix = "http://localhost:3001";
 
 const API = {
-  discoverActivities: function (cityLat, cityLong) {
-    amadeus.shopping.activities
-      .get({
-        latitude: cityLat,
-        longitude: cityLong,
-      })
-      .then((response) => {
-        return response.data;
-      });
-
-    // EXAMPLE CALL: API.getLatLon("Seattle").then(response => API.discoverActivities(response.data.coord.lat, response.data.coord.lon));
-  },
-
-  getImage: function (imageType) {
-    return axios.get(
-      `https://api.unsplash.com/search/photos?page=1&query=${imageType}`,
-      {
-        headers: {
-          Authorization: `Client-ID 34TGxAx6Nt53t9zaY8MJD35t76aAwgLhsAi_zmNS8X0`,
-        },
-      }
+ getAmadeusSe: function (token) {
+  return axios.get(
+    `${urlPrefix}/amadeusSe`
+    , {   headers: {
+        authorization: `Bearer ${token}`,
+      },
+    }
     );
-  },
+ },
+ getAmadeusId: function (token) {
+  return axios.get(
+    `${urlPrefix}/amadeusId`
+    , {   headers: {
+        authorization: `Bearer ${token}`,
+      },
+    }
+    );
+ },
 
   login: function (userData) {
     return axios.post(`${urlPrefix}/login`, userData);
