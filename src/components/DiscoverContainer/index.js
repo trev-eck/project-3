@@ -183,8 +183,8 @@ export default function DiscoverContainer(props) {
       clientSecret: clientS,
     });
     //console.log("amadeus", amadeus);
-    clientI = "";
-    clientS = "";
+    // clientI = "";
+    // clientS = "";
     //console.log(amadeus, lat, lon);
     amadeus.shopping.activities
       .get({

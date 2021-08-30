@@ -3,8 +3,8 @@ const Amadeus = require("amadeus");
 const env = require("dotenv");
 
 
-//const urlPrefix = "https://rendezvous-apiroutes.herokuapp.com";
-const urlPrefix = "http://localhost:3001";
+const urlPrefix = "https://tranquil-savannah-97505.herokuapp.com";
+//const urlPrefix = "http://localhost:3001";
 
 const API = {
  getAmadeusSe: function (token) {
